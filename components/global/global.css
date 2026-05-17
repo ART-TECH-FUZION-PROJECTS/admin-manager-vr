@@ -34,19 +34,40 @@
     --admin-mang-light-green-bg: #d5ffe5;
 }
 
+
+
 /* ============================================
  * Global UI Overrides
  * ============================================ */
 
 /* Remove default browser/WordPress outline and focus shadow centrally */
-*:focus,
-*:focus-visible,
-*:active {
+.admin-mang-global-plugin-wrapper *:focus,
+.admin-mang-global-plugin-wrapper *:focus-visible,
+.admin-mang-global-plugin-wrapper *:active {
     outline: none !important;
     box-shadow: none !important;
 }
 
-/* Reset WordPress default paragraph margin */
-p {
+/* Reset WordPress default paragraph margin and set base typography color */
+
+.admin-mang-global-plugin-wrapper {
+    box-sizing: border-box !important;
+    color: var(--admin-mang-text);
+    font-family: var(--admin-mang-font);
+    overflow-x: clip;
+}
+
+.admin-mang-global-plugin-wrapper  * {
+    box-sizing: border-box !important;
     margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    font-family: inherit;
+}
+
+/* Ensure WordPress admin notices don't break our layout */
+.admin-mang-wp-notice-placeholder + .notice{
+    margin: 5px 0 15px 0 !important;
+    border-radius: 8px;
+    box-shadow: var(--admin-mang-card-shadow);
 }

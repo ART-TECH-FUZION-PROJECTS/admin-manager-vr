@@ -14,14 +14,11 @@ if (!defined('ABSPATH')) {
 function admin_mang_get_default_schema() {
     return array(
         array('name' => 'My Profile',           'type' => 'page'),
-        array('name' => 'User Booking',        'type' => 'page'),
-        array('name' => 'Add New Listing',     'type' => 'page'),
-        array('name' => 'Host Listings',       'type' => 'page'),
         array('name' => 'Listing Archive',     'type' => 'page'),
         array('name' => 'Listing Single View', 'type' => 'page'),
-        array('name' => 'my_wishlist',         'label' => 'My Wishlist', 'type' => 'page'),
-        array('name' => 'Logout',              'type' => 'value'),
-        array('name' => 'Login',               'type' => 'value'),
+        array('name' => 'logout',              'label' => 'Logout', 'type' => 'value'),
+        array('name' => 'login',               'label' => 'Login', 'type' => 'value'),
+        array('name' => 'auth_client_id',      'label' => 'Auth Client ID', 'type' => 'value'),
     );
 }
 
@@ -49,7 +46,10 @@ function admin_mang_create_tables() {
 
     // Initial population of default entries if missing
     $defaults = admin_mang_get_default_schema();
+    $default_names = array();
+
     foreach ($defaults as $entry) {
+        $default_names[] = $entry['name'];
         $exists = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM $table_name WHERE name = %s",
             $entry['name']
@@ -69,44 +69,15 @@ function admin_mang_create_tables() {
             );
         }
     }
+
+    // Prune entries that are not in the default schema to keep database clean
+    $current_entries = $wpdb->get_col("SELECT name FROM $table_name");
+    if (!empty($current_entries)) {
+        foreach ($current_entries as $db_name) {
+            if (!in_array($db_name, $default_names)) {
+                $wpdb->delete($table_name, array('name' => $db_name));
+            }
+        }
+    }
 }
 
-/**
- * Check if table exists
- */
-function admin_mang_table_exists() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'admin_management';
-    return $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
-}
-
-/**
- * Get table row count
- */
-function admin_mang_get_row_count() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'admin_management';
-    if (!admin_mang_table_exists()) return 0;
-    return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-}
-
-/**
- * Get last update timestamp
- */
-function admin_mang_get_last_updated() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'admin_management';
-    if (!admin_mang_table_exists()) return 'N/A';
-    $last_updated = $wpdb->get_var("SELECT MAX(updated_at) FROM $table_name");
-    return $last_updated ? $last_updated : 'N/A';
-}
-
-/**
- * Get all entries
- */
-function admin_mang_get_all_entries() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'admin_management';
-    if (!admin_mang_table_exists()) return array();
-    return $wpdb->get_results("SELECT * FROM $table_name ORDER BY id ASC", ARRAY_A);
-}

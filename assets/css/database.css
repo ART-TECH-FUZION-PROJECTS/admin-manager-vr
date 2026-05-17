@@ -1,11 +1,5 @@
 /* Database Management Styles */
 
-.admin-mang-container {
-    width: 96%;
-    max-width: 1200px;
-    margin: 1rem auto;
-    font-family: var(--admin-mang-font);
-}
 
 .admin-mang-header {
     display: flex;

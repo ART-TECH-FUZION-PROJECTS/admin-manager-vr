@@ -1,11 +1,4 @@
-/* Page Management Styles - Scoped with .am-pm- */
 
-.am-pm-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    font-family: var(--admin-mang-font);
-    width: 96%;
-}
 
 /* Main Heading */
 .am-pm-header {
